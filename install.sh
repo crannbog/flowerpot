@@ -96,3 +96,5 @@ else
     echo "$alias_def" >> "$global_bashrc"
     echo "Alias $alias_def has been added to $global_bashrc."
 fi
+
+exec bash
