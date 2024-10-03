@@ -87,6 +87,25 @@ fi
 echo "*** Adding flowerpot to PATH ***"
 
 alias_def="alias flowerpot=\"lua $script_dir/flowerpot.lua\""
+output=""
+first_alias=true
 
-sed -i "/^alias [^=]*$/a $alias_def" ~/.bashrc
+# Read the .bashrc file line by line
+while IFS= read -r line; do
+    output+="$line"$'\n'  # Append the current line to output
+    
+    # Check if the line starts with "alias"
+    if [[ "$line" == alias* ]]; then
+        if $first_alias; then
+            output+="$alias_def"
+            first_alias=false
+        fi
+    fi
+done < ~/.bashrc
 
+if $first_alias; then
+    output+="$alias_def"
+fi
+
+# Write all lines back to .bashrc
+echo -e "$output" > ~/.bashrc
