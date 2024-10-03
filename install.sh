@@ -88,6 +88,5 @@ echo "*** Adding flowerpot to PATH ***"
 
 alias_def="alias flowerpot=\"lua $script_dir/flowerpot.lua\""
 
-tac ~/.bashrc | grep '^alias' | head -n 1 | sed "s/$/; $alias_def/" > temp_alias
-sed '$d' ~/.bashrc > ~/.bashrc.temp && cat temp_alias >> ~/.bashrc.temp && cat ~/.bashrc >> ~/.bashrc.temp && mv ~/.bashrc.temp ~/.bashrc
+{ tac ~/.bashrc | grep '^alias' | head -n 1 && echo "$alias_def"; } >> ~/.bashrc.temp; grep -v '^alias' ~/.bashrc >> ~/.bashrc.temp && mv ~/.bashrc.temp ~/.bashrc
 rm temp_alias
