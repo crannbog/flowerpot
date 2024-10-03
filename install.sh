@@ -99,7 +99,7 @@ while IFS= read -r line; do
         echo "ALIAS FOUND $line, and first_alias is $first_alias"
 
         if $first_alias; then
-            output+="$alias_def"
+            output+="$alias_def\n"
             first_alias=false
         fi
     fi
