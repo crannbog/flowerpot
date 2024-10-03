@@ -81,3 +81,18 @@ else
     echo "Lua is not installed. Installing version $latest_version."
     install_lua "$latest_version" "$install_dir"
 fi
+
+
+# Add flowerpot to PATH
+
+echo "*** Adding flowerpot to PATH ***"
+
+alias_def="alias flowerpot=\'lua $script_dir/flowerpot.lua\'"
+global_bashrc=/etc/bash
+
+if grep -q "$alias_def"; then
+    echo "Alias already registered"
+else
+    echo "$alias_def" >> "$global_bashrc"
+    echo "Alias $alias_def has been added to $global_bashrc."
+fi
