@@ -88,7 +88,7 @@ fi
 echo "*** Adding flowerpot to PATH ***"
 
 alias_def="alias flowerpot=\'lua $script_dir/flowerpot.lua\'"
-global_bashrc=/etc/bash
+global_bashrc=/etc/bash.bashrc
 
 if grep -q "$alias_def"; then
     echo "Alias already registered"
