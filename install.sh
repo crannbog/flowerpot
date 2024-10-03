@@ -86,7 +86,7 @@ fi
 
 echo "*** Adding flowerpot to PATH ***"
 
-alias_def="alias flowerpot=\"lua $script_dir/flowerpot.lua\""
+alias_def="alias flowerpot=\'lua $script_dir/flowerpot.lua\'"
 # Temporary variable to hold the output
 output=""
 found_alias=false
