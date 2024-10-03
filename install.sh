@@ -96,6 +96,8 @@ while IFS= read -r line; do
     
     # Check if the line starts with "alias"
     if [[ "$line" == alias* ]]; then
+        echo "ALIAS FOUND $line, and first_alias is $first_alias"
+
         if $first_alias; then
             output+="$alias_def"
             first_alias=false
