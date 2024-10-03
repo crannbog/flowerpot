@@ -95,6 +95,8 @@ found_alias=false
 while IFS= read -r line; do
     output+="$line"$'\n'  # Append the current line to output
 
+    echo $line
+
     # Check if the line starts with "alias"
     if [[ "$line" == alias* && "$found_alias" == false ]]; then
         echo "INSERTING NEW ALIAS at line $line"
