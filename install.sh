@@ -15,6 +15,10 @@ get_latest_lua_version() {
     curl -s https://www.lua.org/ftp/ | grep -oP 'lua-\K[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -1
 }
 
+# Determine script directory and target installation directory
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+install_dir="$script_dir/core/runtime"
+
 # Function to download and install Lua into a specified directory
 install_lua() {
     local version=$1
@@ -38,6 +42,11 @@ install_lua() {
 
     echo "Lua $version has been installed into $install_dir!"
     ln -sf ~/flowerpot/core/runtime/bin/lua /usr/bin/lua
+        
+    # Clean up extracted files
+    cd "$script_dir"
+    rm -rf "lua-$latest_version"
+    rm "lua-$latest_version.tar.gz"
 }
 
 # Prerequisites
@@ -54,10 +63,6 @@ if [ -z "$latest_version" ]; then
 fi
 
 echo "Latest Lua version is $latest_version"
-
-# Determine script directory and target installation directory
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-install_dir="$script_dir/core/runtime"
 
 # Create the target directory if it doesn't exist
 mkdir -p "$install_dir"  # Ensures the ./core/runtime directory is created
@@ -77,11 +82,6 @@ else
     install_lua "$latest_version" "$install_dir"
 fi
 
-# Clean up extracted files
-cd "$script_dir"
-rm -rf "lua-$latest_version"
-rm "lua-$latest_version.tar.gz"
-
 # Add flowerpot to PATH
 
 echo "*** Adding flowerpot to PATH ***"
@@ -89,4 +89,3 @@ echo "*** Adding flowerpot to PATH ***"
 alias_def="alias flowerpot=\"lua $script_dir/flowerpot.lua\""
 
 { tac ~/.bashrc | grep '^alias' | head -n 1 && echo "$alias_def"; } >> ~/.bashrc.temp; grep -v '^alias' ~/.bashrc >> ~/.bashrc.temp && mv ~/.bashrc.temp ~/.bashrc
-rm temp_alias
