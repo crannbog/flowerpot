@@ -42,7 +42,7 @@ install_lua() {
 # Main script
 latest_version=$(get_latest_lua_version)
 
-apt-get install build-essentials
+apt-get install build-essential
 
 if [ -z "$latest_version" ]; then
     echo "Failed to determine the latest Lua version."
