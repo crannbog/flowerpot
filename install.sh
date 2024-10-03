@@ -87,26 +87,24 @@ fi
 echo "*** Adding flowerpot to PATH ***"
 
 alias_def="alias flowerpot=\"lua $script_dir/flowerpot.lua\""
+# Temporary variable to hold the output
 output=""
-first_alias=true
+found_alias=false
 
 # Read the .bashrc file line by line
 while IFS= read -r line; do
     output+="$line"$'\n'  # Append the current line to output
-    
-    # Check if the line starts with "alias"
-    if [[ "$line" == alias* ]]; then
-        echo "ALIAS FOUND $line, and first_alias is $first_alias"
 
-        if $first_alias; then
-            output+="$alias_def\n"
-            first_alias=false
-        fi
+    # Check if the line starts with "alias"
+    if [[ "$line" == alias* && "$found_alias" == false ]]; then
+        output+="$alias_def"$'\n'  # Insert the new alias after the first found alias
+        found_alias=true  # Set the flag to true to avoid inserting again
     fi
 done < ~/.bashrc
 
-if $first_alias; then
-    output+="$alias_def"
+# If no alias was found, append the new alias at the end
+if [[ "$found_alias" == false ]]; then
+    output+="$alias_def"$'\n'
 fi
 
 # Write all lines back to .bashrc
