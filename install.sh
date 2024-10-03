@@ -81,35 +81,3 @@ else
     echo "Lua is not installed. Installing version $latest_version."
     install_lua "$latest_version" "$install_dir"
 fi
-
-# Add flowerpot to PATH
-
-echo "*** Adding flowerpot to PATH ***"
-
-alias_def="alias flowerpot=\'lua $script_dir/flowerpot.lua\'"
-# Temporary variable to hold the output
-output=""
-found_alias=false
-
-# Read the .bashrc file line by line
-while IFS= read -r line; do
-    output+="$line"$'\n'  # Append the current line to output
-
-    echo $line
-
-    # Check if the line starts with "alias"
-    if [[ "$line" == alias* && "$found_alias" == false ]]; then
-        echo "INSERTING NEW ALIAS at line $line"
-        output+="$alias_def"$'\n'  # Insert the new alias after the first found alias
-        found_alias=true  # Set the flag to true to avoid inserting again
-    fi
-done < ~/.bashrc
-
-# If no alias was found, append the new alias at the end
-if [[ "$found_alias" == false ]]; then
-    echo "INSERTING NEW ALIAS 2"
-    output+="$alias_def"$'\n'
-fi
-
-# Write all lines back to .bashrc
-echo -e "$output" > ~/.bashrc
