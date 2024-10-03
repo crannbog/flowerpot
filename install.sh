@@ -97,7 +97,7 @@ while IFS= read -r line; do
 
     # Check if the line starts with "alias"
     if [[ "$line" == alias* && "$found_alias" == false ]]; then
-        echo "INSERTING NEW ALIAS"
+        echo "INSERTING NEW ALIAS at line $line"
         output+="$alias_def"$'\n'  # Insert the new alias after the first found alias
         found_alias=true  # Set the flag to true to avoid inserting again
     fi
