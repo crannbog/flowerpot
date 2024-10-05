@@ -27,7 +27,7 @@ end
 
 function fp.update()
     logger.info("Updating flowerpot in " .. current_dir)
-    exec.run("cd " .. current_dir .. " && git pull")
+    exec.run("cd " .. current_dir .. " && git pull && bash install.sh")
 end
 
 function fp.manager(...)
