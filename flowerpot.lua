@@ -7,6 +7,9 @@ local current_dir = current_file_path:match("(.*/)")
 -- Add the helpers/ directory to package.path so we can find logger.lua
 package.path = current_dir .. "?.lua;" .. package.path
 
+-- imports
+
+local logger = require("core.helper.logger")
 local fp = require("flowerpot_module")
 
 -- Script stuff - handles the arguments

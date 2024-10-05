@@ -10,6 +10,7 @@ package.path = current_dir .. "?.lua;" .. package.path
 -- imports
 
 local logger = require("core.helper.logger")
+local exec = require("core.helper.exec")
 local managerModule = require("manager.manager")
 
 local fp = {}
@@ -21,7 +22,12 @@ local function manager()
 end
 
 function fp.test()
-    logger.info("Flowerpot is working.")
+    logger.info("Flowerpot is working. Noot Noot.")
+end
+
+function fp.update()
+    logger.info("Updating flowerpot in " .. current_dir)
+    exec.run("cd " .. current_dir .. " && git pull")
 end
 
 function fp.manager(...)
