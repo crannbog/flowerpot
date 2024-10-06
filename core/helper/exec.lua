@@ -10,10 +10,13 @@ local logger = require("logger")
 local exec = {}
 
 -- Function to execute shell commands
-local function run(command, hideCommand)
+local function run(command, hideCommand, requireSudo)
     hideCommand = hideCommand ~= nil and hideCommand or false
-    -- local handle = io.popen("sh -c '" .. command .. "'")
-    local handle = io.popen(command)
+    requireSudo = requireSudo ~= nil and hideCommand or false
+
+    sudoPrefix = requireSudo and "sudo " or ""
+
+    local handle = io.popen(sudoPrefix .. "sh -c '" .. command .. "'")
     local output = handle:read("*a")
     local success, _, exit_code = handle:close()
 
@@ -34,8 +37,12 @@ local function run(command, hideCommand)
     return true, exit_code
 end
 
-function exec.run(command, hideCommand)
-    run(command, hideCommand)
+function exec.run(command, hideCommand, requireSudo)
+    run(command, hideCommand, requireSudo)
+end
+
+function exec.sudo(command, hideCommand)
+    run(command, hideCommand, requireSudo, true)
 end
 
 return exec
