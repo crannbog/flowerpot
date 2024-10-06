@@ -24,6 +24,7 @@ function manager.run(method, ...)
     if type(manager[method]) == "function" then
         manager[method](table.unpack(args, 2))
     else
+        logger.warn("Method " .. method .. " not found. Skipping.")
     end
 end
 
