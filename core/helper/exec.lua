@@ -12,7 +12,8 @@ local exec = {}
 -- Function to execute shell commands
 local function run(command, hideCommand)
     hideCommand = hideCommand ~= nil and hideCommand or false
-    local handle = io.popen(command .. " 2>&1")
+    -- local handle = io.popen("sh -c '" .. command .. "'")
+    local handle = io.popen(command)
     local output = handle:read("*a")
     local success, _, exit_code = handle:close()
 

@@ -38,10 +38,10 @@ install_lua() {
     make linux test
 
     echo "Installing Lua $version into $install_dir..."
-    make INSTALL_TOP="$install_dir" install
+    sudo make INSTALL_TOP="$install_dir" install
 
     echo "Lua $version has been installed into $install_dir!"
-    ln -sf ~/flowerpot/core/runtime/bin/lua /usr/bin/lua
+    sudo ln -sf ~/flowerpot/core/runtime/bin/lua /usr/bin/lua
         
     # Clean up extracted files
     cd "$script_dir"
@@ -51,8 +51,8 @@ install_lua() {
 
 # Prerequisites
 
-apt-get update
-apt-get install build-essential -y
+sudo apt-get update
+sudo apt-get install build-essential -y
 
 # Main script
 latest_version=$(get_latest_lua_version)
@@ -87,14 +87,16 @@ fi
 
 echo "*** Adding flowerpot to PATH ***"
 
-alias_def="alias flowerpot=\"lua $script_dir/flowerpot.lua\"" .. "\nalias fp=\"lua $script_dir/flowerpot.lua\""
+alias_def="alias flowerpot=\"lua $script_dir/flowerpot.lua\""
+alias_def2="alias ff=\"lua $script_dir/flowerpot.lua\""
 global_bashrc=/etc/bash.bashrc
 
-if grep -q "$alias_def" "$global_bashrc"; then
+if sudo grep -q "alias flowerpot" "$global_bashrc"; then
     echo "Alias already registered"
 else
-    echo "$alias_def" >> "$global_bashrc"
+    sudo echo "$alias_def" >> "$global_bashrc"
+    sudo echo "$alias_def2" >> "$global_bashrc"
     echo "Alias $alias_def has been added to $global_bashrc."
 fi
 
-exec bash
+exit
