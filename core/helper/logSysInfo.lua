@@ -18,6 +18,9 @@ local function convert_speed(speed)
     if unit == "MB/s" and value >= 1024 then
         value = value / 1024
         unit = "GB/s"
+    elseif unit == "GB/s" and value < 1 then
+        value = value * 1024
+        unit = "MB/s"
     end
     return value, unit
 end
