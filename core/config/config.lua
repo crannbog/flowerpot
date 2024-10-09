@@ -10,4 +10,11 @@ package.path = package.path .. ";../../?.lua"
 
 -- Imports
 local logger = require("core.helper.logger")
-local exec = require("core.helper.exec")
+
+local config = {}
+
+function config.hello()
+    logger.title("hello")
+end
+
+return config

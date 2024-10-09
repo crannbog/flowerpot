@@ -1,14 +1,17 @@
 #!/usr/bin/env lua
 
--- Get the current file's directory
-local current_file_path = debug.getinfo(1, "S").source:sub(2)
-local current_dir = current_file_path:match("(.*/)")
-package.path = current_dir .. "?.lua;" .. package.path
+-- Get flowerpot's directory
+local flowerpot_dir_candidate = debug.getinfo(1, "S").source:sub(2)
+local flowerpot_dir = flowerpot_dir_candidate:match("(.*/)")
 
--- imports
-local logger = require("logger")
-local exec = require("exec")
-local logSysInfo = require("logSysInfo")
+-- Set Package Path to flowerpot's root
+package.path = flowerpot_dir .. "?.lua;" .. package.path
+package.path = package.path .. ";../../?.lua"
+
+-- Imports
+local logger = require("core.helper.logger")
+local exec = require("core.helper.exec")
+local logSysInfo = require("core.helper.logSysInfo")
 
 -- install stuff
 
