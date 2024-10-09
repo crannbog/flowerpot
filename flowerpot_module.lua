@@ -11,6 +11,7 @@ package.path = current_dir .. "?.lua;" .. package.path
 
 local logger = require("core.helper.logger")
 local exec = require("core.helper.exec")
+local info = require("core.helper.logSysInfo")
 local managerModule = require("manager.manager")
 
 local fp = {}
@@ -29,6 +30,10 @@ function fp.update()
     logger.info("Updating flowerpot in " .. current_dir)
     exec.run("cd " .. current_dir .. " && git pull")
     exec.sudo("cd " .. current_dir .. " && bash " .. current_dir .. "install.sh")
+end
+
+function fp.info()
+    info()
 end
 
 function fp.manager(...)

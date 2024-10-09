@@ -14,7 +14,7 @@ local function run(command, hideCommand, requireSudo)
     hideCommand = hideCommand ~= nil and hideCommand or false
     requireSudo = requireSudo ~= nil and hideCommand or false
 
-    sudoPrefix = requireSudo and "sudo " or ""
+    local sudoPrefix = requireSudo and "sudo " or ""
 
     local handle = io.popen(sudoPrefix .. "sh -c '" .. command .. "'")
     local output = handle:read("*a")
@@ -22,6 +22,7 @@ local function run(command, hideCommand, requireSudo)
 
     if not success then
         logger.error("Command failed with exit code: " .. exit_code .. "\n" .. logger.add_whitespaces(command))
+        logger.plain(_)
         return false, exit_code
     end
 
@@ -42,7 +43,7 @@ function exec.run(command, hideCommand, requireSudo)
 end
 
 function exec.sudo(command, hideCommand)
-    run(command, hideCommand, requireSudo, true)
+    run(command, hideCommand, true)
 end
 
 return exec
