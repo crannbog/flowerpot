@@ -8,6 +8,11 @@ package.path = current_dir .. "?.lua;" .. package.path
 local logger = require("logger")
 local exec = require("exec")
 
+local function measure_speed()
+    logger.plain(logger.add_whitespaces("Testing Network Speed..."))
+    exec.run("speedtest-cli --simple", true)
+end
+
 local function logSysInfo()
     logger.title("System Information:")
 
@@ -48,6 +53,8 @@ local function logSysInfo()
     exec.run([[
         echo "# PUBLIC IP:" & ip -4 addr show dev $(ip route show default | awk '\''/default/ {print $5}'\'') | grep inet | awk '\''{print $2}'\'' | awk -F'\''/'\'' '\''{print $1}'\''
     ]], true)
+
+    measure_speed()
 end
 
 return logSysInfo

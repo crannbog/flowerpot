@@ -52,7 +52,7 @@ install_lua() {
 # Prerequisites
 
 sudo apt-get update
-sudo apt-get install build-essential -y
+sudo apt-get install build-essential speedtest-cli -y
 
 # Main script
 latest_version=$(get_latest_lua_version)
