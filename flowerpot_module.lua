@@ -22,14 +22,10 @@ local exec = require("core.helper.exec")
 local info = require("core.helper.logSysInfo")
 local managerModule = require("manager.manager")
 local configModule = require("core.config.config")
+local installDocker = require("core.installer.install-docker")
+
 
 local fp = {}
-
-local function test() 
-end
-
-local function manager() 
-end
 
 function fp.test()
     logger.info("Flowerpot is working. Noot Noot.")
@@ -39,11 +35,14 @@ end
 function fp.update()
     logger.info("Updating flowerpot in " .. current_dir)
     exec.run("cd " .. current_dir .. " && git pull")
-    exec.sudo("cd " .. current_dir .. " && bash " .. current_dir .. "install.sh")
 end
 
 function fp.info()
     info()
+end
+
+function fp.docker()
+    installDocker.install()
 end
 
 function fp.manager(...)

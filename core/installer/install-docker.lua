@@ -11,3 +11,25 @@ package.path = package.path .. ";../../?.lua"
 -- Imports
 local logger = require("core.helper.logger")
 local exec = require("core.helper.exec")
+
+local docker = {}
+
+local function install_docker ()
+    exec.sudo("cd " .. flowerpot_dir .. " && bash " .. flowerpot_dir .. "scripts/install-docker.sh")
+end
+
+function docker.install ()
+    local ver = exec.run("docker --version", true)
+
+    if exec.silent("grep -qi 'microsoft' /proc/version", true) then
+        return logger.warn("This is a WSL system. Skipping Docker installation.")
+    end
+
+    if not ver then
+        logger.warn("Docker not installed or active")
+    end
+    
+    -- 
+end
+
+return docker

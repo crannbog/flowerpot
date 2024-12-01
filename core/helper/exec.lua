@@ -30,7 +30,9 @@ local function run(command, hideCommand, requireSudo, hideOutput)
     local success, _, exit_code = handle:close()
 
     if not success then
-        logger.error("Command failed with exit code: " .. exit_code .. "\n" .. logger.add_whitespaces(command))
+        if not hideCommand then
+            logger.error("Command failed with exit code: " .. exit_code .. "\n" .. logger.add_whitespaces(command))
+        end
         return false, exit_code
     end
 
