@@ -1,11 +1,11 @@
 #!/usr/bin/env lua
 
--- Get flowerpot's directory
-local flowerpot_dir_candidate = debug.getinfo(1, "S").source:sub(2)
-local flowerpot_dir = flowerpot_dir_candidate:match("(.*/)")
+-- Get own directory
+local self_dir_candidate= debug.getinfo(1, "S").source:sub(2)
+local self_dir= self_dir_candidate:match("(.*/)")
 
 -- Set Package Path to flowerpot's root
-package.path = flowerpot_dir .. "?.lua;" .. package.path
+package.path = self_dir.. "?.lua;" .. package.path
 package.path = package.path .. ";../../?.lua"
 
 -- Get the current file's directory
@@ -14,6 +14,8 @@ local current_dir = current_file_path:match("(.*/)")
 
 -- Add the helpers/ directory to package.path so we can find logger.lua
 package.path = current_dir .. "?.lua;" .. package.path
+
+FF_DIR = current_dir; 
 
 -- imports
 
