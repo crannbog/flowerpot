@@ -15,7 +15,8 @@ local exec = require("core.helper.exec")
 local docker = {}
 
 local function install_docker ()
-    exec.sudo("cd " .. flowerpot_dir .. " && bash " .. flowerpot_dir .. "scripts/install-docker.sh")
+    logger.title(flowerpot_dir .. " + " .. flowerpot_dir_candidate)
+    exec.run("cd " .. flowerpot_dir .. " && bash " .. flowerpot_dir .. "scripts/install-docker.sh")
 end
 
 function docker.install ()
