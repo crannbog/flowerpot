@@ -43,6 +43,10 @@ function fp.info()
     info()
 end
 
+function fp.relog()
+    exec.run("sudo -k su -l $USER &")
+end
+
 function fp.docker()
     installDocker.install()
 end
