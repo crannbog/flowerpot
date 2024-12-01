@@ -26,7 +26,8 @@ function docker.install ()
     end
 
     if not ver then
-        logger.warn("Docker not installed or active")
+        logger.warn("Docker not installed or active, installing...")
+        install_docker()
     end
     
     -- 
