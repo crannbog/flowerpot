@@ -25,6 +25,7 @@ local info = require("core.helper.logSysInfo")
 local managerModule = require("manager.manager")
 local configModule = require("core.config.config")
 local installDocker = require("core.installer.install-docker")
+local teleportModule = require("teleport.teleport")
 
 
 local fp = {}
@@ -47,13 +48,18 @@ function fp.relog()
     exec.run("sudo -k su -l $USER &")
 end
 
-function fp.docker()
-    installDocker.install()
+function fp.docker(...)
+    local args = {...}
+    installDocker.run(args[1])
 end
 
 function fp.manager(...)
     local args = {...}
     managerModule.run(args[1])
+end
+
+function fp.teleport(...)
+    teleportModule.run(...)
 end
 
 -- export the fp module
