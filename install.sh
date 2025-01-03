@@ -62,6 +62,7 @@ sudo apt-get update
 sudo apt-get install build-essential speedtest-cli unzip -y
 
 wget https://github.com/crannbog/flowerpot/archive/refs/heads/stable.zip -O flowerpot.zip && unzip flowerpot.zip -d flowerpot && rm flowerpot.zip
+cd ~/flowerpot
 
 # Main script
 latest_version=$(get_latest_lua_version)
