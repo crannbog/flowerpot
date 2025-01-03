@@ -17,7 +17,9 @@ local teleport = {}
 function teleport.run(...)
     local args = {...}
 
-    logger.info(args[1]);    
+    local user = exec.run("read -p 'Enter SSH username: '")
+
+    logger.warn(user);
 end
 
 return teleport

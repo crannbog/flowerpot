@@ -10,14 +10,20 @@
 #
 # ======== ======== ======== ======== #
 
+# Check if the script is being run with root privileges
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root or with sudo privileges."
+   exit 1
+fi
+
 # Function to get the latest Lua version number
 get_latest_lua_version() {
     curl -s https://www.lua.org/ftp/ | grep -oP 'lua-\K[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -1
 }
 
 # Determine script directory and target installation directory
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-install_dir="$script_dir/core/runtime"
+flowerpot_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+install_dir="$flowerpot_dir/core/runtime"
 
 # Function to download and install Lua into a specified directory
 install_lua() {
@@ -44,7 +50,7 @@ install_lua() {
     sudo ln -sf ~/flowerpot/core/runtime/bin/lua /usr/bin/lua
         
     # Clean up extracted files
-    cd "$script_dir"
+    cd "$flowerpot_dir"
     rm -rf "lua-$latest_version"
     rm "lua-$latest_version.tar.gz"
 }
@@ -87,8 +93,8 @@ fi
 
 echo "*** Adding flowerpot to PATH ***"
 
-alias_def="alias flowerpot=\"lua $script_dir/flowerpot.lua\""
-alias_def2="alias ff=\"lua $script_dir/flowerpot.lua\""
+alias_def="alias flowerpot=\"lua $flowerpot_dir/flowerpot.lua\""
+alias_def2="alias ff=\"lua $flowerpot_dir/flowerpot.lua\""
 global_bashrc=/etc/bash.bashrc
 
 if sudo grep -q "alias flowerpot" "$global_bashrc"; then
