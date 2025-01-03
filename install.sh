@@ -10,10 +10,11 @@
 #
 # ======== ======== ======== ======== #
 
-# Check if the script is being run with root privileges
+# Check if the script is being run as root
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root or with sudo privileges."
-   exit 1
+   echo "This script must be run as root or with sudo. Re-running with sudo..."
+   sudo "$0" "$@"
+   exit $?
 fi
 
 # Function to get the latest Lua version number
@@ -58,7 +59,9 @@ install_lua() {
 # Prerequisites
 
 sudo apt-get update
-sudo apt-get install build-essential speedtest-cli -y
+sudo apt-get install build-essential speedtest-cli unzip -y
+
+wget https://github.com/crannbog/flowerpot/archive/refs/heads/stable.zip -O flowerpot.zip && unzip flowerpot.zip -d flowerpot && rm flowerpot.zip
 
 # Main script
 latest_version=$(get_latest_lua_version)
