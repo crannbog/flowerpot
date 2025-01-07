@@ -18,10 +18,11 @@ local function escape_single_quotes(cmd)
 end
 
 -- Function to execute shell commands
-local function run(command, hideCommand, requireSudo, hideOutput)
+local function run(command, hideCommand, requireSudo, hideOutput, noFail)
     hideCommand = hideCommand ~= nil and hideCommand or false
     hideOutput = hideOutput ~= nil and hideOutput or false
     requireSudo = requireSudo ~= nil and hideCommand or false
+    noFail = noFail ~= nil and noFail or false
 
     local sudoPrefix = requireSudo and "sudo " or ""
 
@@ -33,7 +34,7 @@ local function run(command, hideCommand, requireSudo, hideOutput)
         if not hideCommand then
             logger.error("Command failed with exit code: " .. exit_code .. "\n" .. logger.add_whitespaces(command))
         end
-        return false, exit_code
+        return noFail, noFail and output or exit_code
     end
 
     output = logger.add_whitespaces(output)
@@ -50,16 +51,20 @@ local function run(command, hideCommand, requireSudo, hideOutput)
     return output, exit_code
 end
 
-function exec.run(command, hideCommand, requireSudo, hideOutput)
-    return run(command, hideCommand, requireSudo, hideOutput)
+function exec.run(command, hideCommand, requireSudo, hideOutput, noFail)
+    return run(command, hideCommand, requireSudo, hideOutput, noFail)
 end
 
-function exec.sudo(command, hideCommand)
-    return run(command, hideCommand, true)
+function exec.sudo(command, hideCommand, noFail)
+    return run(command, hideCommand, true, noFail)
 end
 
-function exec.silent(command, hideCommand, requireSudo)
-    return run(command, hideCommand, requireSudo, true)
+function exec.silent(command, hideCommand, requireSudo, noFail)
+    return run(command, hideCommand, requireSudo, true, noFail)
+end
+
+function exec.noFail(command, hideCommand, requireSudo, hideOutput)
+    return run(command, hideCommand, requireSudo, hideOutput, true)
 end
 
 return exec

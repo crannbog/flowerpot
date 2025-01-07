@@ -47,7 +47,7 @@ local function check_and_install_git()
 end
 
 local function check_is_repo()
-    local result = exec.run("cd " .. FF_DIR .. "&& git status", true)
+    local result = exec.noFail("cd " .. FF_DIR .. "&& git status", true)
 
     if result and string.match(result, "fatal") then
         logger.info("Fresh/manual install detected, not a git repository. Initializing...")
