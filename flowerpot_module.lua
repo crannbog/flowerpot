@@ -51,8 +51,8 @@ local function check_is_repo()
 
     if result and string.match(result, "fatal") then
         logger.info("Fresh/manual install detected, not a git repository. Initializing...")
-        exec.run("git init -b stable")
-        exec.run("git remote add origin git@github.com:crannbog/flowerpot.git")
+        exec.run("cd " .. FF_DIR .. "&& git init -b stable")
+        exec.run("cd " .. FF_DIR .. "&& git remote add origin git@github.com:crannbog/flowerpot.git")
     end
 end
 
