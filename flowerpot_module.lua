@@ -52,7 +52,8 @@ local function check_is_repo()
     if result and string.match(result, "fatal") then
         logger.info("Fresh/manual install detected, not a git repository. Initializing...")
         exec.run("cd " .. FF_DIR .. "&& git init -b stable -q")
-        exec.run("cd " .. FF_DIR .. "&& git remote add origin git@github.com:crannbog/flowerpot.git")
+        exec.run("cd " .. FF_DIR .. "&& git remote add origin https://github.com/crannbog/flowerpot.git")
+        exec.run("cd " .. FF_DIR .. "&& git reset --hard origin/stable")
     end
 end
 
@@ -65,7 +66,7 @@ function fp.update()
     check_and_install_git()
     check_is_repo()
     logger.info("Updating flowerpot in " .. current_dir)
-    exec.run("cd " .. current_dir .. " && git pull")
+    exec.run("cd " .. current_dir .. " && git pull origin stable")
 end
 
 function fp.info()
