@@ -50,7 +50,7 @@ function download_and_extract_program {
     sudo mkdir -p $INSTALL_DIR
     mv "/tmp/$PROGRAM_NAME/$PROGRAM_NAME-stable/"* "$INSTALL_DIR/"
     rm -rf "/tmp/$PROGRAM_NAME" "/tmp/$PROGRAM_NAME.zip"
-    sudo chown -R $USER:$USER $INSTALL_DIR
+    sudo chown -R $SUDO_USER:$SUDO_USER $INSTALL_DIR
     sudo chmod -R 755 $INSTALL_DIR
 }
 
