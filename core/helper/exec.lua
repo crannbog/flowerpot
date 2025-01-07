@@ -34,7 +34,7 @@ local function run(command, hideCommand, requireSudo, hideOutput, noFail)
         if not hideCommand then
             logger.error("Command failed with exit code: " .. exit_code .. "\n" .. logger.add_whitespaces(command))
         end
-        return noFail, noFail and output or exit_code
+        return noFail and output or false, exit_code
     end
 
     output = logger.add_whitespaces(output)
