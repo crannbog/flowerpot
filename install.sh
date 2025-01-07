@@ -48,9 +48,8 @@ function download_and_extract_program {
     sudo mkdir -p $INSTALL_DIR
     mv "/tmp/$PROGRAM_NAME/$PROGRAM_NAME-stable/"* "$INSTALL_DIR/"
     rm -rf "/tmp/$PROGRAM_NAME" "/tmp/$PROGRAM_NAME.zip"
-    sudo chown -R root:users $INSTALL_DIR
-    sudo chmod -R 775 $INSTALL_DIR 
-    sudo chmod g+s $INSTALL_DIR 
+    sudo chown -R $USER:$USER $INSTALL_DIR
+    sudo chmod -R 755 $INSTALL_DIR
 }
 
 # Function to get the latest Lua version number
@@ -61,7 +60,7 @@ get_latest_lua_version() {
 # Check if Lua is installed
 function check_lua_installed {
     local latest_version=$(get_latest_lua_version)
-    
+
     if command -v lua &>/dev/null; then
         log "Lua is already installed and available in PATH."
         return 0
