@@ -38,7 +38,7 @@ function prepare_system {
 # Download and extract program repository
 function download_and_extract_program {
     log "Downloading program archive from $PROGRAM_REPO..."
-    wget $PROGRAM_REPO -O "/tmp/$PROGRAM_NAME.zip"
+    wget --no-cache $PROGRAM_REPO -O "/tmp/$PROGRAM_NAME.zip"
 
     log "Extracting program archive to $INSTALL_DIR..."
     unzip -q -o "/tmp/$PROGRAM_NAME.zip" -d "/tmp/$PROGRAM_NAME"
