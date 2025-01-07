@@ -15,7 +15,8 @@ local exec = require("core.helper.exec")
 local docker = {}
 
 local function install_docker ()
-    exec.run("cd " .. FF_DIR .. " && bash " .. FF_DIR .. "scripts/install-docker.sh")
+    logger.info("FF_DIR: " .. FF_DIR)
+    exec.sudo("cd " .. FF_DIR .. " && bash " .. FF_DIR .. "scripts/install-docker.sh")
 end
 
 function docker.install ()
