@@ -32,7 +32,7 @@ local fp = {}
 
 local function check_and_install_git()
     -- Check if Git is installed by running 'git --version'
-    local result = exec.run("git --version", true)
+    local result = exec.run("git --version", true, false, true)
 
     -- If the result contains 'git version', it means git is installed
     if result and string.match(result, "git version") then
@@ -47,7 +47,7 @@ local function check_and_install_git()
 end
 
 local function check_is_repo()
-    local result = exec.noFail("cd " .. FF_DIR .. "&& git status", true)
+    local result = exec.noFail("cd " .. FF_DIR .. "&& git status", true, false, true)
 
     if result and string.match(result, "fatal") then
         logger.info("Fresh/manual install detected, not a git repository. Initializing...")
