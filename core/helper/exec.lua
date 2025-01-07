@@ -28,16 +28,16 @@ local function run(command, hideCommand, requireSudo, hideOutput, noFail)
 
     local handle = io.popen(sudoPrefix .. "sh -c '" .. escape_single_quotes(command) .. "' 2>&1")
     local output = handle:read("*a")
-    output = logger.add_whitespaces(output)
     local success, _, exit_code = handle:close()
 
     if not success then
         if not hideCommand then
-            logger.error("Command failed with exit code: " .. exit_code .. "\n" .. logger.add_whitespaces(command))
+            logger.error("Command failed with exit code: " .. exit_code .. "\n" .. logger.add_whitespaces(command) .. "\n" .. logger.add_whitespaces("Output: " .. output))
         end
         return noFail and output or false, exit_code
     end
 
+    output = logger.add_whitespaces(output)
     command = hideCommand and "" or command
 
     if hideCommand then
