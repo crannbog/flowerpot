@@ -46,10 +46,11 @@ function download_and_extract_program {
     sudo rm -rf "$INSTALL_DIR" # Remove old program files if they exist
     log "Recreating Dir $INSTALL_DIR..."
     sudo mkdir -p $INSTALL_DIR
-    sudo chown -R root:users $INSTALL_DIR
-    sudo chmod -R 755 $INSTALL_DIR 
     mv "/tmp/$PROGRAM_NAME/$PROGRAM_NAME-stable/"* "$INSTALL_DIR/"
     rm -rf "/tmp/$PROGRAM_NAME" "/tmp/$PROGRAM_NAME.zip"
+    sudo chown -R root:users $INSTALL_DIR
+    sudo chmod -R 775 $INSTALL_DIR 
+    sudo chmod g+s $INSTALL_DIR 
 }
 
 # Function to get the latest Lua version number
