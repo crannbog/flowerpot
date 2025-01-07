@@ -1,111 +1,123 @@
-#!/bin/sh
+#!/bin/bash
 
-# ======== ======== ======== ======== #
-# 
-# Script: install.sh
-# Targets: install lua and other necessary tools
-# Author: cmmdmx
-# 
-# PROVIDED BY CRANNBOG OPENSOURCE
-#
-# ======== ======== ======== ======== #
+# Exit immediately if a command exits with a non-zero status, and show errors
+set -euo pipefail
 
-script_dir="$(realpath "$0")"
-flowerpot_dir="$(realpath "~/flowerpot/")"
-install_dir="$flowerpot_dir/core/runtime"
+script_path="$(realpath "$0")"
+script_dir="$(dirname $script_path)"
 
-# Check if the script is being run as root
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root or with sudo. Re-running with sudo..."
-   exec sudo bash "$()" "$@"
-fi
+# Variables
+PROGRAM_NAME="flowerpot"
+INSTALL_DIR="/opt/$PROGRAM_NAME"
+PROGRAM_REPO="https://github.com/crannbog/flowerpot/archive/refs/heads/stable.zip"
+LUA_REPO="https://www.github.com/lua/lua.git"
+LUA_INSTALL_DIR="$INSTALL_DIR/core/runtime"
+BASHRC_FILE="/etc/bash.bashrc"
+PROGRAM_ALIAS="ff"
+
+# Function to display messages
+function log {
+    echo "     [INFO] $1"
+}
+
+# Ensure the script is run with sudo
+function ensure_sudo {
+    if [[ "$EUID" -ne 0 ]]; then
+        echo "This script must be run as root or with sudo. Re-running with sudo..."
+        exec sudo bash $script_path
+    fi
+}
+
+# Prepare system by updating package lists and installing required packages
+function prepare_system {
+    log "Updating package lists and installing prerequisites..."
+    apt-get update -y
+    apt-get install -y build-essential speedtest-cli unzip
+}
+
+# Download and extract program repository
+function download_and_extract_program {
+    log "Downloading program archive from $PROGRAM_REPO..."
+    wget $PROGRAM_REPO -O "/tmp/$PROGRAM_NAME.zip"
+
+    log "Extracting program archive to $INSTALL_DIR..."
+    unzip -q -o "/tmp/$PROGRAM_NAME.zip" -d "/tmp/$PROGRAM_NAME"
+    log "Removing old contents from $INSTALL_DIR..."
+    sudo rm -rf "$INSTALL_DIR" # Remove old program files if they exist
+    log "Recreating Dir $INSTALL_DIR..."
+    sudo mkdir -p $INSTALL_DIR
+    mv "/tmp/$PROGRAM_NAME/$PROGRAM_NAME-stable/"* "$INSTALL_DIR/"
+    rm -rf "/tmp/$PROGRAM_NAME" "/tmp/$PROGRAM_NAME.zip"
+}
 
 # Function to get the latest Lua version number
 get_latest_lua_version() {
     curl -s https://www.lua.org/ftp/ | grep -oP 'lua-\K[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -1
 }
 
-# Function to download and install Lua into a specified directory
-install_lua() {
-    local version=$1
-    local lua_tarball="lua-$version.tar.gz"
+# Check if Lua is installed
+function check_lua_installed {
+    local latest_version=$(get_latest_lua_version)
+    
+    if command -v lua &>/dev/null; then
+        log "Lua is already installed and available in PATH."
+        return 0
+    else
+        log "Lua is not installed. Proceeding with Lua installation..."
+        return 1
+    fi
+}
+
+# Install Lua from source
+function install_lua {
+    local latest_version=$(get_latest_lua_version)
+    local lua_tarball="lua-$latest_version.tar.gz"
     local lua_url="https://www.lua.org/ftp/$lua_tarball"
-    local install_dir=$2
 
-    echo "Downloading Lua $version..."
+    log "Downloading Lua $latest_version..."
+    mkdir -p /tmp/lua
+    cd /tmp/lua
     curl -R -O $lua_url
-
-    echo "Extracting Lua $version..."
     tar -zxf $lua_tarball
 
     cd "lua-$version" || exit
 
-    echo "Building Lua $version..."
-    make linux test
+    log "Building and installing Lua..."
+    make linux
+    make INSTALL_TOP="$LUA_INSTALL_DIR" install
 
-    echo "Installing Lua $version into $install_dir..."
-    sudo make INSTALL_TOP="$install_dir" install
+    log "Creating symlink for Lua binaries..."
+    ln -sf "$LUA_INSTALL_DIR/bin/lua" /usr/local/bin/lua
+    ln -sf "$LUA_INSTALL_DIR/bin/luac" /usr/local/bin/luac
 
-    echo "Lua $version has been installed into $install_dir!"
-    sudo ln -sf ~/flowerpot/core/runtime/bin/lua /usr/bin/lua
-        
-    # Clean up extracted files
-    cd "$flowerpot_dir"
-    rm -rf "lua-$latest_version"
-    rm "lua-$latest_version.tar.gz"
+    log "Lua installation completed successfully."
 }
 
-# Prerequisites
-
-sudo apt-get update
-sudo apt-get install build-essential speedtest-cli unzip -y
-
-wget https://github.com/crannbog/flowerpot/archive/refs/heads/stable.zip -O flowerpot.zip && unzip flowerpot.zip -d flowerpot && rm flowerpot.zip
-cd ~/flowerpot
-
-# Main script
-latest_version=$(get_latest_lua_version)
-
-if [ -z "$latest_version" ]; then
-    echo "Failed to determine the latest Lua version."
-    exit 1
-fi
-
-echo "Latest Lua version is $latest_version"
-
-# Create the target directory if it doesn't exist
-mkdir -p "$install_dir"  # Ensures the ./core/runtime directory is created
-
-if command -v lua &> /dev/null; then
-    # Lua is installed, now check its version
-    INSTALLED_VERSION=$(lua -v 2>&1 | awk '{print $2}')
-    
-    if [ "$INSTALLED_VERSION" != "$latest_version" ]; then
-        echo "Lua is installed but not the latest version. Installing version $latest_version."
-        install_lua "$latest_version" "$install_dir"
+# Add program alias to bashrc
+function add_program_alias {
+    if ! grep -q "alias $PROGRAM_ALIAS=" "$BASHRC_FILE"; then
+        log "Adding program alias to $BASHRC_FILE..."
+        echo "alias $PROGRAM_ALIAS='lua $INSTALL_DIR/flowerpot.lua'" >>"$BASHRC_FILE"
+        echo "alias $PROGRAM_NAME='lua $INSTALL_DIR/flowerpot.lua'" >>"$BASHRC_FILE"
+        log "Alias added successfully. Please reload your shell or run 'source $BASHRC_FILE' to apply changes."
     else
-        echo "Lua is already installed and is the latest version ($INSTALLED_VERSION)."
+        log "Program alias already exists in $BASHRC_FILE."
     fi
-else
-    echo "Lua is not installed. Installing version $latest_version."
-    install_lua "$latest_version" "$install_dir"
+}
+
+# Main execution
+ensure_sudo
+prepare_system
+download_and_extract_program
+
+if ! check_lua_installed; then
+    install_lua
 fi
 
+check_lua_installed # Verify Lua installation again after installing
 
-# Add flowerpot to PATH
+add_program_alias
 
-echo "*** Adding flowerpot to PATH ***"
-
-alias_def="alias flowerpot=\"lua $flowerpot_dir/flowerpot.lua\""
-alias_def2="alias ff=\"lua $flowerpot_dir/flowerpot.lua\""
-global_bashrc=/etc/bash.bashrc
-
-if sudo grep -q "alias flowerpot" "$global_bashrc"; then
-    echo "Alias already registered"
-else
-    sudo echo "$alias_def" >> "$global_bashrc"
-    sudo echo "$alias_def2" >> "$global_bashrc"
-    echo "Alias $alias_def has been added to $global_bashrc."
-fi
+log "Installation completed successfully!"
 
 exit
