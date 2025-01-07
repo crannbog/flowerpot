@@ -25,8 +25,9 @@ local function run(command, hideCommand, requireSudo, hideOutput, noFail)
     noFail = noFail ~= nil and noFail or false
 
     local sudoPrefix = requireSudo and "sudo " or ""
+    local noFailSuffix = noFail and " 2>&1" or ""
 
-    local handle = io.popen(sudoPrefix .. "sh -c '" .. escape_single_quotes(command) .. "' 2>&1")
+    local handle = io.popen(sudoPrefix .. "sh -c '" .. escape_single_quotes(command) .. "'" .. noFailSuffix)
     local output = handle:read("*a")
     local success, _, exit_code = handle:close()
 

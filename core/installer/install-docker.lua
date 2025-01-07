@@ -16,7 +16,7 @@ local docker = {}
 
 local function install_docker ()
     logger.info("FF_DIR: " .. FF_DIR)
-    exec.sudo("cd " .. FF_DIR .. " && bash " .. FF_DIR .. "scripts/install-docker.sh")
+    exec.sudo("cd " .. FF_DIR .. " && bash " .. FF_DIR .. "scripts/install-docker.sh", false)
 end
 
 function docker.install ()
