@@ -37,13 +37,15 @@ function prepare_system {
 
 # Download and extract program repository
 function download_and_extract_program {
+    # Remove old program files if they exist
+    log "Removing old contents from $INSTALL_DIR..."
+    sudo rm -rf $INSTALL_DIR
+
     log "Downloading program archive from $PROGRAM_REPO..."
     wget --no-cache $PROGRAM_REPO -O "/tmp/$PROGRAM_NAME.zip"
 
     log "Extracting program archive to $INSTALL_DIR..."
     unzip -q -o "/tmp/$PROGRAM_NAME.zip" -d "/tmp/$PROGRAM_NAME"
-    log "Removing old contents from $INSTALL_DIR..."
-    sudo rm -rf "$INSTALL_DIR" # Remove old program files if they exist
     log "Recreating Dir $INSTALL_DIR..."
     sudo mkdir -p $INSTALL_DIR
     mv "/tmp/$PROGRAM_NAME/$PROGRAM_NAME-stable/"* "$INSTALL_DIR/"
