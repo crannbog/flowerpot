@@ -10,20 +10,20 @@
 #
 # ======== ======== ======== ======== #
 
+script_dir="$(realpath "$0")"
+flowerpot_dir="$(realpath "~/flowerpot/")"
+install_dir="$flowerpot_dir/core/runtime"
+
 # Check if the script is being run as root
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root or with sudo. Re-running with sudo..."
-   exec sudo bash "$(realpath "$0")" "$@"
+   exec sudo bash "$()" "$@"
 fi
 
 # Function to get the latest Lua version number
 get_latest_lua_version() {
     curl -s https://www.lua.org/ftp/ | grep -oP 'lua-\K[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -1
 }
-
-# Determine script directory and target installation directory
-flowerpot_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-install_dir="$flowerpot_dir/core/runtime"
 
 # Function to download and install Lua into a specified directory
 install_lua() {
