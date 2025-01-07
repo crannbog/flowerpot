@@ -80,7 +80,7 @@ function install_lua {
     curl -R -O $lua_url
     tar -zxf $lua_tarball
 
-    cd "lua-$version" || exit
+    cd "lua-$latest_version" || exit
 
     log "Building and installing Lua..."
     make linux
